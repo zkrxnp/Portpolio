@@ -1,0 +1,44 @@
+{
+  "name": "jiwoo-security-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@12.3.4",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx scripts/seed.ts",
+    "test:ratelimit": "tsx scripts/ratelimit.test.ts",
+    "test:oauth": "tsx scripts/oauth.test.ts",
+    "test": "tsx scripts/oauth.test.ts && tsx scripts/ratelimit.test.ts"
+  },
+  "dependencies": {
+    "@vercel/analytics": "1.6.1",
+    "lucide-react": "^1.16.0",
+    "next": "16.3.3",
+    "react": "^19",
+    "react-dom": "^19",
+    "mongoose": "^8.9.5",
+    "jose": "^5.9.6",
+    "zod": "^3.24.1",
+    "marked": "^15.0.6",
+    "isomorphic-dompurify": "^2.19.0",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "5.7.3",
+    "tsx": "^4.19.2",
+    "dotenv": "^16.4.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  }
+}
