@@ -20,8 +20,8 @@ export function Header() {
   useEffect(() => setOpen(false), [pathname])
 
   return (
-    <header className="bar wrap">
-      <Link href="/" className="brand">한지우<em>Han Jiwoo</em></Link>
+    <header className="bar wrap" style={{ viewTransitionName: 'site-header' }}>
+      <Link href="/" className="brand">정현진<em>Jeong Hyeonjin</em></Link>
       <nav className={open ? 'nav open' : 'nav'} aria-label="주요 메뉴">
         {links.map((l) => (
           <Link key={l.href} href={l.href} aria-current={pathname === l.href ? 'page' : undefined}>
@@ -29,7 +29,7 @@ export function Header() {
           </Link>
         ))}
       </nav>
-      <p className="status"><span className="dot" />서울에서 협업 가능</p>
+      <p className="status"><span className="dot" />프로젝트·스터디 협업 환영</p>
       <button
         className="menu-btn"
         onClick={() => setOpen((v) => !v)}

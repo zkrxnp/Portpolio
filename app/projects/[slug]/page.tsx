@@ -6,6 +6,7 @@ import { getProject, getProjects } from '@/lib/data'
 import { renderMarkdown } from '@/lib/markdown'
 import Visual from '@/components/site/Visual'
 import ViewCounter from '@/components/site/ViewCounter'
+import { PageTransition, SharedVisual } from '@/components/site/PageTransition'
 
 export const revalidate = 60
 
@@ -40,8 +41,9 @@ export default async function ProjectDetail({ params }: Props) {
   const html = project.body ? renderMarkdown(project.body) : ''
 
   return (
+    <PageTransition>
     <article className="wrap detail" style={{ paddingTop: 72 }}>
-      <p className="crumb"><Link href="/projects">← 작업 목록</Link></p>
+      <p className="crumb"><Link href="/projects" transitionTypes={['nav-back']}>← 작업 목록</Link></p>
 
       <header className="detail-head">
         <h1>{project.title}</h1>
@@ -55,7 +57,7 @@ export default async function ProjectDetail({ params }: Props) {
       </header>
 
       {project.visual !== 'none' && (
-        <div className="detail-visual"><Visual kind={project.visual} /></div>
+        <div className="detail-visual"><SharedVisual slug={project.slug}><Visual kind={project.visual} /></SharedVisual></div>
       )}
 
       {project.stack.length > 0 && (
@@ -70,10 +72,11 @@ export default async function ProjectDetail({ params }: Props) {
 
       <div className="band" style={{ marginTop: 80 }}>
         <section className="contact wrap">
-          <h2>비슷한 작업이 필요하신가요?</h2>
+          <h2>이 작업에 대해 더 이야기해볼까요?</h2>
           <Link className="email" href="/contact">문의 보내기<ArrowUpRight /></Link>
         </section>
       </div>
     </article>
+    </PageTransition>
   )
 }

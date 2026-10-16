@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { getProjects, getPosts } from '@/lib/data'
 import Visual from '@/components/site/Visual'
+import { PageTransition, SharedVisual } from '@/components/site/PageTransition'
 
 export const revalidate = 60
 
@@ -12,21 +13,21 @@ export default async function HomePage() {
   ])
 
   return (
-    <>
+    <PageTransition>
       <section id="top" className="hero wrap">
         <div>
-          <h1 className="r1">공격의 흔적을 읽고<br />무너지기 전에 막습니다</h1>
+          <h1 className="r1">왜 그렇게 동작하는지<br /><span className="grad">끝까지 따라갑니다</span></h1>
           <p className="hero-lede r2">
-            탐지 룰을 쓰고, 침해를 추적하고, 남아 있는 기록에서 사건의 순서를 복원합니다.
-            보안을 막연한 불안이 아니라 다룰 수 있는 신호로 바꾸는 일을 합니다.
+            리버싱으로 보안을 시작해 시스템 해킹과 공급망 보안까지 왔습니다.
+            취약점을 볼 때는 무엇인지보다 왜 그렇게 터졌는지를 먼저 봅니다.
           </p>
           <Link className="hero-link r3" href="/projects">작업 보기</Link>
         </div>
         <dl className="ledger r4">
-          <div className="row"><dt>분류</dt><dd>보안 연구, 침해 대응</dd></div>
-          <div className="row"><dt>범위</dt><dd>리눅스 유저랜드, 사내망, 웹</dd></div>
-          <div className="row"><dt>경력</dt><dd className="num">2021 — 현재</dd></div>
-          <div className="row"><dt>상태</dt><dd>새 프로젝트를 받고 있습니다</dd></div>
+          <div className="row"><dt>분류</dt><dd>시스템 해킹, 리버싱</dd></div>
+          <div className="row"><dt>범위</dt><dd>리눅스 유저랜드, npm 공급망, LLM</dd></div>
+          <div className="row"><dt>소속</dt><dd>중부대학교 정보보호학전공</dd></div>
+          <div className="row"><dt>상태</dt><dd className="num">2025.03 — 재학 중</dd></div>
         </dl>
       </section>
 
@@ -41,11 +42,11 @@ export default async function HomePage() {
         ) : (
           projects.map((p) => (
             <article className="case" key={p._id}>
-              <Link href={`/projects/${p.slug}`} className="case-visual" aria-label={`${p.title} 자세히 보기`}>
-                <Visual kind={p.visual} />
+              <Link href={`/projects/${p.slug}`} transitionTypes={['nav-forward']} className="case-visual" aria-label={`${p.title} 자세히 보기`}>
+                <SharedVisual slug={p.slug}><Visual kind={p.visual} /></SharedVisual>
               </Link>
               <div>
-                <h3><Link href={`/projects/${p.slug}`}>{p.title}</Link></h3>
+                <h3><Link href={`/projects/${p.slug}`} transitionTypes={['nav-forward']}>{p.title}</Link></h3>
                 <p className="case-desc">{p.summary}</p>
                 <dl className="facts">
                   <div><dt>분야</dt><dd>{p.category}</dd></div>
@@ -82,17 +83,19 @@ export default async function HomePage() {
       <section id="about" className="wrap" style={{ paddingTop: 110 }}>
         <div className="section-head">
           <h2>소개</h2>
-          <p className="note">2021 — 현재</p>
+          <p className="note num">2025 — 현재</p>
         </div>
         <div className="about-grid">
-          <h2>복잡한 위협을<br />읽을 수 있는 순서로</h2>
+          <h2>무엇인지보다<br />왜 터졌는지를 먼저</h2>
           <div>
-            <p>보안은 불안을 키우는 일이 아니라, 보이지 않는 위험을 이해하고 통제할 수 있는 신호로 바꾸는 일이라고 생각합니다.</p>
-            <p>그래서 경보를 많이 만드는 것보다, 사람이 읽고 바로 움직일 수 있는 경보를 만드는 데 시간을 씁니다.</p>
+            <p>고등학생 때 파이썬과 C로 프로그래밍을 시작하며 코드가 안에서 어떻게 흘러가는지에 관심을 갖게 됐습니다. 대학에 와서는 리버싱으로 보안을 시작했고, 자연스럽게 시스템 해킹까지 왔습니다.</p>
+            <p>sudo에서 새 취약점을 찾겠다고 덤볐다가 어디를 봐야 할지 몰라 막혔고, 그래서 과거 취약점이 왜 생겼는지부터 거꾸로 따라갔습니다. 그때 배운 순서를 지금도 씁니다. 요즘은 모델의 권한과 입력 신뢰 문제가 시스템 보안과 같은 구조라는 점에 끌려 LLM 보안을 공부하고 있습니다.</p>
             <dl className="caps">
-              <div><dt>영역</dt><dd>위협 헌팅, 사고 대응, 디지털 포렌식, 네트워크 보안</dd></div>
-              <div><dt>도구</dt><dd className="num">Suricata, Zeek, Volatility, Ghidra</dd></div>
-              <div><dt>언어</dt><dd className="num">C, Python, Go</dd></div>
+              <div><dt>영역</dt><dd>리버싱, 시스템 해킹, 공급망 보안, LLM 보안</dd></div>
+              <div><dt>도구</dt><dd className="num">OllyDbg, Docker, Semgrep, AWS</dd></div>
+              <div><dt>언어</dt><dd className="num">C, Python</dd></div>
+              <div><dt>발표</dt><dd>House of Spirit(S.C.P 세미나), 프롬프트 인젝션(오픈 세미나), 지뢰찾기 리버싱(명지대 합동 세미나)</dd></div>
+              <div><dt>CTF</dt><dd>2025 JBU CTF 장려상 · 2025 CCE · 2025 세종 헥테온 · 2026 Inc0gnito · 2026 한양대</dd></div>
             </dl>
           </div>
         </div>
@@ -100,11 +103,11 @@ export default async function HomePage() {
 
       <div className="band" style={{ marginTop: 110 }}>
         <section className="contact wrap">
-          <h2>지켜야 할 시스템이 있나요?</h2>
-          <p className="sub">점검이든 사고 대응이든, 상황을 먼저 들어보고 필요한 범위를 같이 정하겠습니다.</p>
+          <h2>같이 파볼 문제가 있나요?</h2>
+          <p className="sub">함께할 프로젝트나 스터디, 채용 관련 이야기라면 편하게 보내주세요.</p>
           <Link className="email" href="/contact">문의 보내기<ArrowUpRight /></Link>
         </section>
       </div>
-    </>
+    </PageTransition>
   )
 }

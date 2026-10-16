@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { getProjects, getCategories } from '@/lib/data'
 import Visual from '@/components/site/Visual'
 import SearchBar from '@/components/site/SearchBar'
+import { PageTransition, SharedVisual } from '@/components/site/PageTransition'
+import { firstParam } from '@/lib/http'
 
 export const metadata: Metadata = { title: '작업' }
 export const dynamic = 'force-dynamic'
@@ -10,15 +12,18 @@ export const dynamic = 'force-dynamic'
 export default async function ProjectsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string }>
+  searchParams: Promise<{ q?: string | string[]; category?: string | string[] }>
 }) {
-  const { q = '', category = '전체' } = await searchParams
+  const sp = await searchParams
+  const q = firstParam(sp.q) ?? ''
+  const category = firstParam(sp.category) ?? '전체'
   const [projects, categories] = await Promise.all([
     getProjects({ q, category }),
     getCategories(),
   ])
 
   return (
+    <PageTransition>
     <section className="wrap" style={{ paddingTop: 72 }}>
       <div className="section-head">
         <h2>작업</h2>
@@ -44,11 +49,11 @@ export default async function ProjectsPage({
       ) : (
         projects.map((p) => (
           <article className="case" key={p._id}>
-            <Link href={`/projects/${p.slug}`} className="case-visual" aria-label={`${p.title} 자세히 보기`}>
-              <Visual kind={p.visual} />
+            <Link href={`/projects/${p.slug}`} transitionTypes={['nav-forward']} className="case-visual" aria-label={`${p.title} 자세히 보기`}>
+              <SharedVisual slug={p.slug}><Visual kind={p.visual} /></SharedVisual>
             </Link>
             <div>
-              <h3><Link href={`/projects/${p.slug}`}>{p.title}</Link></h3>
+              <h3><Link href={`/projects/${p.slug}`} transitionTypes={['nav-forward']}>{p.title}</Link></h3>
               <p className="case-desc">{p.summary}</p>
               <dl className="facts">
                 <div><dt>분야</dt><dd>{p.category}</dd></div>
@@ -63,5 +68,6 @@ export default async function ProjectsPage({
         ))
       )}
     </section>
+    </PageTransition>
   )
 }

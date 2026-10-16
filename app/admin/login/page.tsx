@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LogIn } from 'lucide-react'
 import { safeReturnPath } from '@/lib/oauth'
+import { firstParam } from '@/lib/http'
 
 export const metadata: Metadata = { title: '로그인', robots: { index: false, follow: false } }
 
@@ -16,16 +17,22 @@ const MESSAGES: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string; min?: string }>
+  searchParams: Promise<{ next?: string | string[]; error?: string | string[]; min?: string | string[] }>
 }) {
-  const { next, error, min } = await searchParams
-  const target = safeReturnPath(next)
+  const sp = await searchParams
+  const error = firstParam(sp.error)
+  const target = safeReturnPath(firstParam(sp.next))
+
+  // min은 URL에서 오므로 아무 문장이나 들어올 수 있습니다. 관리자 로그인 화면의 경고 박스에
+  // 피싱 문구를 띄우지 못하도록 formatRetry가 만드는 형태("N분")만 받습니다.
+  const rawMin = firstParam(sp.min)
+  const min = rawMin && /^\d{1,3}분$/.test(rawMin) ? rawMin : '잠시'
 
   const message =
     error === 'locked'
-      ? `시도가 너무 많습니다. ${min ?? '잠시'} 뒤에 다시 시도하세요.`
+      ? `시도가 너무 많습니다. ${min} 뒤에 다시 시도하세요.`
       : error
-        ? (MESSAGES[error] ?? '로그인하지 못했습니다.')
+        ? ((Object.hasOwn(MESSAGES, error) && MESSAGES[error]) || '로그인하지 못했습니다.')
         : null
 
   return (

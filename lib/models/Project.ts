@@ -1,6 +1,6 @@
 import { Schema, model, models, type InferSchemaType, type Model } from 'mongoose'
 
-export const PROJECT_CATEGORIES = ['탐지', '설계', '포렌식', '리버싱', '웹'] as const
+export const PROJECT_CATEGORIES = ['시스템', '리버싱', '공급망', '클라우드', 'AI 보안'] as const
 export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number]
 
 export const PROJECT_VISUALS = ['log', 'trust', 'hex', 'none'] as const

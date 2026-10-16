@@ -7,14 +7,14 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: {
-    default: '한지우 — 보안 포트폴리오',
-    template: '%s — 한지우',
+    default: '정현진 — 보안 포트폴리오',
+    template: '%s — 정현진',
   },
-  description: '위협 탐지, 사고 대응, 디지털 포렌식을 다루는 보안 연구자 한지우의 포트폴리오',
+  description: '리버싱에서 시작해 시스템 해킹과 공급망 보안을 공부하는 정현진의 포트폴리오',
   openGraph: {
     type: 'website',
     locale: 'ko_KR',
-    siteName: '한지우 — 보안 포트폴리오',
+    siteName: '정현진 — 보안 포트폴리오',
   },
   icons: {
     icon: [
@@ -28,13 +28,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'dark',
-  themeColor: '#050b1f',
+  themeColor: '#0b0a2e',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
       <body className="antialiased">
+        <div className="bokeh" aria-hidden><span /><span /><span /><span /><span /><span /></div>
         <a href="#main" className="skip">본문으로 건너뛰기</a>
         <Header />
         <main id="main">{children}</main>

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Check, Loader2 } from 'lucide-react'
 
-const KINDS = ['보안 점검', '사고 대응', '교육·멘토링', '기타'] as const
+const KINDS = ['프로젝트·협업', '스터디·세미나', '채용·인턴', '기타'] as const
 
 type FieldErrors = Record<string, string>
 

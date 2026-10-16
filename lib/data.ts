@@ -1,6 +1,7 @@
 import dbConnect from './mongodb'
 import Project, { type ProjectDoc } from './models/Project'
 import Post, { type PostDoc } from './models/Post'
+import { decodeSlug } from './http'
 
 /** 서버 컴포넌트에서 쓰는 조회 함수들. 직렬화 가능한 평범한 객체로 바꿔 반환합니다. */
 
@@ -69,7 +70,8 @@ export async function getProjects(opts: { q?: string; category?: string; limit?:
  }, [] as ProjectCard[], 'projects')
 }
 
-export async function getProject(slug: string) {
+export async function getProject(raw: string) {
+ const slug = decodeSlug(raw)
  return safe(async () => {
   await dbConnect()
   const doc = await Project.findOne({ slug, published: true }).lean<ProjectDoc | null>()
@@ -125,7 +127,8 @@ export async function getPosts(opts: { q?: string; tag?: string; limit?: number 
  }, [] as PostCard[], 'posts')
 }
 
-export async function getPost(slug: string) {
+export async function getPost(raw: string) {
+ const slug = decodeSlug(raw)
  return safe(async () => {
   await dbConnect()
   const doc = await Post.findOne({ slug, published: true }).lean<PostDoc | null>()

@@ -126,7 +126,7 @@ curl -s https://api.github.com/users/본인아이디
 ```bash
 pnpm test            # 둘 다
 pnpm test:oauth      # state 비교, PKCE, 허용 목록, 열린 리다이렉트 (40건)
-pnpm test:ratelimit  # 잠금 상태 머신 (17건)
+pnpm test:ratelimit  # 잠금 상태 머신 + 클라이언트 IP (23건)
 ```
 
 DB도 네트워크도 타지 않습니다. 모델 메서드만 메모리 구현으로 갈아끼워 판정 로직만 봅니다.

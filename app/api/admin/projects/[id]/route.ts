@@ -26,11 +26,13 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   try {
     const { id } = await params
     if (!isValidObjectId(id)) return fail('잘못된 식별자입니다.', 400)
-    const data = projectInput.parse(await req.json())
+    const { slug: rawSlug, ...data } = projectInput.parse(await req.json())
+    // 기호뿐인 제목이면 빈 슬러그가 됩니다. 그때는 slug를 갱신 대상에서 빼서 기존 공개 URL을 유지합니다.
+    const slug = slugify(rawSlug || data.title)
     await dbConnect()
     const item = await Project.findByIdAndUpdate(
       id,
-      { ...data, slug: slugify(data.slug || data.title) },
+      slug ? { ...data, slug } : data,
       { new: true, runValidators: true },
     ).lean()
     if (!item) return fail('프로젝트를 찾을 수 없습니다.', 404)

@@ -19,12 +19,20 @@ export function hashIp(ip: string): string {
   return createHash('sha256').update(ip + (process.env.AUTH_SECRET ?? '')).digest('hex')
 }
 
+/**
+ * X-Forwarded-For의 **맨 오른쪽** 값을 씁니다.
+ *
+ * 맨 왼쪽은 클라이언트가 보낸 값이 그대로 남을 수 있어 요청마다 바꿔 레이트 리밋을
+ * 우회할 수 있습니다(로컬에서 실제로 재현). 맨 오른쪽은 우리 앞단 프록시가 붙인 값이라
+ * 클라이언트가 고를 수 없습니다. Vercel처럼 헤더를 통째로 덮어쓰는 환경에서는 값이
+ * 하나뿐이라 왼쪽과 같습니다.
+ *
+ * 한계: 프록시 없이 앱이 직접 노출되면 헤더 전체가 클라이언트 것이라 어느 쪽도 믿을 수
+ * 없습니다. 그 구성은 쓰지 마세요.
+ */
 export function clientIp(headers: Headers): string {
-  return (
-    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    headers.get('x-real-ip')?.trim() ||
-    'local'
-  )
+  const hops = headers.get('x-forwarded-for')?.split(',').map((s) => s.trim()).filter(Boolean)
+  return hops?.at(-1) || headers.get('x-real-ip')?.trim() || 'local'
 }
 
 type Check = { locked: false } | { locked: true; retryAfterMs: number }

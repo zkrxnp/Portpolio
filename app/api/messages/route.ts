@@ -1,9 +1,9 @@
 import { type NextRequest } from 'next/server'
-import { createHash } from 'crypto'
 import dbConnect from '@/lib/mongodb'
 import Message from '@/lib/models/Message'
 import { messageInput } from '@/lib/validation'
 import { ok, fail, handleError } from '@/lib/http'
+import { clientIp, hashIp } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,10 +13,11 @@ export async function POST(req: NextRequest) {
     const data = messageInput.parse(await req.json())
 
     // 허니팟: 사람 눈에 안 보이는 필드가 채워졌으면 성공처럼 응답하고 버립니다.
-    if (data.website) return ok({ ok: true })
+    // 상태 코드까지 진짜 접수(201)와 같아야 봇이 구분하지 못합니다.
+    if (data.website) return ok({ ok: true }, { status: 201 })
 
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'local'
-    const ipHash = createHash('sha256').update(ip + (process.env.AUTH_SECRET ?? '')).digest('hex')
+    // 로그인 레이트 리밋과 같은 IP 추출을 씁니다(XFF 맨 오른쪽 — 이유는 clientIp 주석).
+    const ipHash = hashIp(clientIp(req.headers))
 
     await dbConnect()
 

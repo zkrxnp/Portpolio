@@ -5,7 +5,7 @@
 process.env.AUTH_SECRET = 'x'.repeat(40)
 
 import LoginAttempt from '../lib/models/LoginAttempt'
-import { checkLock, recordFailure, clearFailures, hashIp } from '../lib/rateLimit'
+import { checkLock, recordFailure, clearFailures, hashIp, clientIp } from '../lib/rateLimit'
 
 type Row = { key: string; count: number; firstFailedAt: Date; lockedUntil: Date | null; expireAt: Date; save: () => Promise<void> }
 let store = new Map<string, Row>()
@@ -119,6 +119,15 @@ async function run() {
   check('해시는 64자 hex', /^[0-9a-f]{64}$/.test(IP))
   check('같은 IP는 같은 해시', hashIp('203.0.113.9') === IP)
   check('다른 IP는 다른 해시', hashIp('203.0.113.10') !== IP)
+
+  console.log('\n[클라이언트 IP] XFF 맨 왼쪽은 클라이언트가 고를 수 있음')
+  const H = (h: Record<string, string>) => new Headers(h)
+  check('위조 값 뒤에 프록시가 붙인 값이 있으면 프록시 값', clientIp(H({ 'x-forwarded-for': '1.2.3.4, 198.51.100.7' })) === '198.51.100.7')
+  check('왼쪽을 바꿔도 결과가 같음', clientIp(H({ 'x-forwarded-for': '9.9.9.9, 198.51.100.7' })) === '198.51.100.7')
+  check('값이 하나면 그 값', clientIp(H({ 'x-forwarded-for': '203.0.113.5' })) === '203.0.113.5')
+  check('빈 항목은 무시', clientIp(H({ 'x-forwarded-for': '1.1.1.1, , ' })) === '1.1.1.1')
+  check('XFF 없으면 x-real-ip', clientIp(H({ 'x-real-ip': '203.0.113.6' })) === '203.0.113.6')
+  check('둘 다 없으면 local', clientIp(H({})) === 'local')
 
   console.log(`\n${pass} passed, ${fail} failed\n`)
   process.exit(fail === 0 ? 0 : 1)

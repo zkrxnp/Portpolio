@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPosts, getTags } from '@/lib/data'
 import SearchBar from '@/components/site/SearchBar'
+import { firstParam } from '@/lib/http'
 
 export const metadata: Metadata = { title: '기록' }
 export const dynamic = 'force-dynamic'
@@ -9,9 +10,11 @@ export const dynamic = 'force-dynamic'
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; tag?: string }>
+  searchParams: Promise<{ q?: string | string[]; tag?: string | string[] }>
 }) {
-  const { q = '', tag = '' } = await searchParams
+  const sp = await searchParams
+  const q = firstParam(sp.q) ?? ''
+  const tag = firstParam(sp.tag) ?? ''
   const [posts, tags] = await Promise.all([getPosts({ q, tag }), getTags()])
 
   return (

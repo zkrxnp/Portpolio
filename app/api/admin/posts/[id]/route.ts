@@ -36,7 +36,8 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
     // findByIdAndUpdate는 pre('save')를 타지 않으므로 직접 넣고 save합니다.
     doc.set({
       ...data,
-      slug: slugify(data.slug || data.title),
+      // 기호뿐인 제목이면 빈 슬러그가 됩니다. 수정 한 번에 공개 URL이 바뀌지 않도록 기존 값을 둡니다.
+      slug: slugify(data.slug || data.title) || doc.slug,
       excerpt: data.excerpt || excerptFrom(data.body),
     })
     await doc.save()

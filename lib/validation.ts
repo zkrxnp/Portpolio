@@ -36,10 +36,11 @@ export const messageInput = z.object({
   name: z.string().min(1, '이름을 입력하세요.').max(60),
   email: z.string().email('이메일 형식이 올바르지 않습니다.').max(160),
   org: z.string().max(100).default(''),
-  kind: z.enum(['보안 점검', '사고 대응', '교육·멘토링', '기타']).default('기타'),
+  kind: z.enum(['프로젝트·협업', '스터디·세미나', '채용·인턴', '기타']).default('기타'),
   body: z.string().min(10, '내용을 10자 이상 적어주세요.').max(4000),
-  // 봇이 채우면 조용히 버립니다.
-  website: z.string().max(0).optional(),
+  // 허니팟. 여기서 max(0)으로 막으면 422에 필드 이름이 실려 봇에게 함정을 알려주고,
+  // 라우트의 "성공처럼 응답하고 버리기"에 닿지도 못합니다. 판정은 라우트에서 합니다.
+  website: z.string().max(500).optional(),
 })
 
 export type ProjectInput = z.infer<typeof projectInput>
