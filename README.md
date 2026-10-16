@@ -167,3 +167,4 @@ scripts/                    seed + 테스트 2종
 
 스타일은 `app/globals.css` 한 파일(약 20KB)입니다. Tailwind와 shadcn은
 한 군데도 쓰이지 않아 걷어냈습니다.
+"# Portpolio" 
