@@ -29,7 +29,7 @@ export function Header() {
           </Link>
         ))}
       </nav>
-      <p className="status"><span className="dot" />프로젝트·스터디 협업 환영</p>
+      <a className="status" href="https://github.com/zkrxnp" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
       <button
         className="menu-btn"
         onClick={() => setOpen((v) => !v)}

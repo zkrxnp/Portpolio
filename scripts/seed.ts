@@ -21,7 +21,7 @@ const projects = [
   {
     title: 'TrustGate',
     slug: 'trustgate',
-    summary: 'npm 패키지를 설치하기 전에 릴리스 계보를 검증하고, 증거가 부족하면 설치를 막는 공급망 보안 도구를 만들었습니다.',
+    summary: 'npm 패키지 설치 전에 릴리스 계보를 검증하고, 검증되지 않으면 설치를 막는 도구를 만들었습니다.',
     category: '공급망',
     visual: 'trust',
     period: '2026.06 — 2026.09',
@@ -69,7 +69,7 @@ trustgate monitor    # 설치 버전 취약점 확인
   {
     title: 'sudo 취약점 탐색과 N-day 분석',
     slug: 'sudo-nday',
-    summary: 'sudo에서 새 취약점을 찾는 데 두 달간 도전했고, 막힌 지점에서 과거 권한 상승 취약점의 원인부터 거꾸로 따라갔습니다.',
+    summary: 'sudo에서 새 취약점을 찾다가, 과거 권한 상승 취약점의 원인부터 분석했습니다.',
     category: '시스템',
     visual: 'hex',
     period: '2025.12 — 2026.02',
@@ -102,7 +102,7 @@ CVE-2025-32463은 \`sudo -R\`(chroot 옵션)을 처리하는 과정에서 사용
   {
     title: 'AWS CI/CD 보안 파이프라인',
     slug: 'aws-devsecops-pipeline',
-    summary: 'AWS CI/CD 파이프라인에 SAST·SCA·DAST를 붙여, 코드가 올라가면 검사부터 배포 후 점검까지 자동으로 도는 환경을 만들었습니다.',
+    summary: 'AWS CI/CD 파이프라인에 SAST·SCA·DAST를 적용해 보안 검사를 자동화했습니다.',
     category: '클라우드',
     visual: 'log',
     period: '2025.10 — 2025.12',
@@ -133,7 +133,7 @@ PM을 맡아 팀원들과 역할을 나누고 일정을 관리했습니다.
   {
     title: '지뢰찾기 리버싱',
     slug: 'minesweeper-reversing',
-    summary: '윈도우 지뢰찾기를 OllyDbg로 분석해 게임 진행을 좌우하는 조건 분기를 찾아 패치하고, 그 과정을 합동 세미나에서 발표했습니다.',
+    summary: 'OllyDbg로 지뢰찾기의 조건 분기를 찾아 패치하고, 합동 세미나에서 발표했습니다.',
     category: '리버싱',
     visual: 'none',
     period: '2026.01',

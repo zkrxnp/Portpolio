@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowUpRight } from 'lucide-react'
 import { getProject, getProjects } from '@/lib/data'
 import { renderMarkdown } from '@/lib/markdown'
 import Visual from '@/components/site/Visual'
@@ -39,6 +38,7 @@ export default async function ProjectDetail({ params }: Props) {
   if (!project) notFound()
 
   const html = project.body ? renderMarkdown(project.body) : ''
+  const others = (await getProjects({ limit: 50 })).filter((p) => p.slug !== project.slug)
 
   return (
     <PageTransition>
@@ -64,18 +64,23 @@ export default async function ProjectDetail({ params }: Props) {
         <ul className="chips">{project.stack.map((s) => <li key={s}>{s}</li>)}</ul>
       )}
 
-      {html ? (
-        <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
-      ) : (
-        <p className="empty">상세 내용이 아직 작성되지 않았습니다.</p>
-      )}
+      {html && <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />}
 
-      <div className="band" style={{ marginTop: 80 }}>
-        <section className="contact wrap">
-          <h2>이 작업에 대해 더 이야기해볼까요?</h2>
-          <Link className="email" href="/contact">문의 보내기<ArrowUpRight /></Link>
+      {others.length > 0 && (
+        <section style={{ marginTop: 80 }}>
+          <div className="section-head"><h2>다른 작업</h2></div>
+          <ul className="note-list">
+            {others.map((p) => (
+              <li key={p._id}>
+                <Link href={`/projects/${p.slug}`}>
+                  <span className="note-title">{p.title}</span>
+                  <span className="note-meta">{p.category}{p.period && ` · ${p.period}`}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
-      </div>
+      )}
     </article>
     </PageTransition>
   )

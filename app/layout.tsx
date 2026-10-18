@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: '정현진 — 보안 포트폴리오',
     template: '%s — 정현진',
   },
-  description: '리버싱에서 시작해 시스템 해킹과 공급망 보안을 공부하는 정현진의 포트폴리오',
+  description: '리버싱과 시스템 해킹을 공부하는 정현진의 포트폴리오',
   openGraph: {
     type: 'website',
     locale: 'ko_KR',

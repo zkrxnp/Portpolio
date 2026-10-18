@@ -34,7 +34,7 @@ export default async function BlogPage({
 
       {posts.length === 0 ? (
         <p className="empty">
-          {q || tag ? '조건에 맞는 글이 없습니다.' : '아직 발행된 글이 없습니다.'}
+          {q || tag ? '결과 없음' : '준비 중'}
         </p>
       ) : (
         <ul className="post-list">

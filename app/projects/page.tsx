@@ -43,8 +43,8 @@ export default async function ProjectsPage({
       {projects.length === 0 ? (
         <p className="empty">
           {q || category !== '전체'
-            ? '조건에 맞는 작업이 없습니다. 검색어를 지우거나 다른 분야를 눌러보세요.'
-            : '아직 등록된 작업이 없습니다.'}
+            ? '결과 없음'
+            : '준비 중'}
         </p>
       ) : (
         projects.map((p) => (
