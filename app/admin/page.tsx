@@ -3,13 +3,14 @@ import dbConnect from '@/lib/mongodb'
 import Project from '@/lib/models/Project'
 import Post from '@/lib/models/Post'
 import Message from '@/lib/models/Message'
+import Guestbook from '@/lib/models/Guestbook'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminHome() {
   await dbConnect()
 
-  const [projects, drafts, posts, postDrafts, newMessages, top, viewAgg] = await Promise.all([
+  const [projects, drafts, posts, postDrafts, newMessages, top, viewAgg, guestbook] = await Promise.all([
     Project.countDocuments({ published: true }),
     Project.countDocuments({ published: false }),
     Post.countDocuments({ published: true }),
@@ -17,11 +18,13 @@ export default async function AdminHome() {
     Message.countDocuments({ status: 'new' }),
     Project.find({ published: true }).select('title slug views').sort({ views: -1 }).limit(5).lean(),
     Project.aggregate<{ total: number }>([{ $group: { _id: null, total: { $sum: '$views' } } }]),
+    Guestbook.countDocuments({}),
   ])
 
   const stats = [
     { label: '공개 프로젝트', value: projects, sub: drafts ? `초안 ${drafts}` : '초안 없음', href: '/admin/projects' },
-    { label: '발행한 글', value: posts, sub: postDrafts ? `초안 ${postDrafts}` : '초안 없음', href: '/admin/posts' },
+    { label: '공개 기록', value: posts, sub: postDrafts ? `비공개 ${postDrafts}` : '비공개 없음', href: '/admin/posts' },
+    { label: '방명록', value: guestbook, sub: '전체 메시지', href: '/admin/guestbook' },
     { label: '읽지 않은 문의', value: newMessages, sub: newMessages ? '확인이 필요합니다' : '모두 확인함', href: '/admin/messages' },
     { label: '누적 조회', value: viewAgg[0]?.total ?? 0, sub: '프로젝트 합계', href: '/admin/projects' },
   ]

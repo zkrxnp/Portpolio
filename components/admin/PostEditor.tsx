@@ -5,6 +5,9 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
 import { renderMarkdown } from '@/lib/markdown'
+import { LOG_CATEGORIES } from '@/lib/models/Post'
+
+export type ProjectOption = { _id: string; title: string }
 
 type Form = {
   title: string
@@ -12,17 +15,30 @@ type Form = {
   excerpt: string
   body: string
   tags: string[]
+  category: string
+  relatedProjectIds: string[]
   published: boolean
 }
 
-const EMPTY: Form = { title: '', slug: '', excerpt: '', body: '', tags: [], published: false }
+const EMPTY: Form = { title: '', slug: '', excerpt: '', body: '', tags: [], category: '기타', relatedProjectIds: [], published: false }
 
-export function PostEditor({ mode, id, initial }: { mode: 'create' | 'edit'; id?: string; initial?: Form }) {
+export function PostEditor({
+  mode,
+  id,
+  initial,
+  projects = [],
+}: {
+  mode: 'create' | 'edit'
+  id?: string
+  initial?: Form
+  projects?: ProjectOption[]
+}) {
   const router = useRouter()
   const [form, setForm] = useState<Form>(initial ?? EMPTY)
   const [tab, setTab] = useState<'write' | 'preview'>('write')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   // marked + DOMPurify는 브라우저에서도 동작하므로 미리보기를 서버 왕복 없이 그립니다.
   const html = useMemo(() => (tab === 'preview' ? renderMarkdown(form.body) : ''), [tab, form.body])
@@ -36,6 +52,7 @@ export function PostEditor({ mode, id, initial }: { mode: 'create' | 'edit'; id?
     e.preventDefault()
     setBusy(true)
     setError('')
+    setErrors({})
 
     const url = mode === 'create' ? '/api/admin/posts' : `/api/admin/posts/${id}`
     const res = await fetch(url, {
@@ -46,6 +63,9 @@ export function PostEditor({ mode, id, initial }: { mode: 'create' | 'edit'; id?
     const data = await res.json().catch(() => ({}))
 
     if (!res.ok) {
+      if (Array.isArray(data.issues)) {
+        setErrors(Object.fromEntries(data.issues.map((i: { path: string; message: string }) => [i.path, i.message])))
+      }
       setError(data.error ?? '저장하지 못했습니다.')
       setBusy(false)
       return
@@ -74,6 +94,7 @@ export function PostEditor({ mode, id, initial }: { mode: 'create' | 'edit'; id?
           <label className="field">
             <span>제목</span>
             <input value={form.title} onChange={(e) => set('title', e.target.value)} required maxLength={140} />
+            {errors.title && <em className="field-error">{errors.title}</em>}
           </label>
 
           <label className="field">
@@ -108,6 +129,12 @@ export function PostEditor({ mode, id, initial }: { mode: 'create' | 'edit'; id?
         <aside className="editor-side">
           <div className="side-box">
             <label className="field">
+              <span>분류</span>
+              <select value={form.category} onChange={(e) => set('category', e.target.value)}>
+                {LOG_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </label>
+            <label className="field">
               <span>태그 <small>쉼표로 구분</small></span>
               <input
                 value={form.tags.join(', ')}
@@ -119,8 +146,28 @@ export function PostEditor({ mode, id, initial }: { mode: 'create' | 'edit'; id?
               <input type="checkbox" checked={form.published} onChange={(e) => set('published', e.target.checked)} />
               <span>발행</span>
             </label>
-            <p className="side-note">발행을 켜면 그 시점이 발행일로 기록됩니다.</p>
+            <p className="side-note">발행을 켜면 그 시점이 발행일로 기록됩니다. 끄면 방문자에게 보이지 않습니다.</p>
           </div>
+
+          {projects.length > 0 && (
+            <fieldset className="side-box">
+              <legend className="side-note">관련 프로젝트</legend>
+              {projects.map((p) => (
+                <label className="check" key={p._id}>
+                  <input
+                    type="checkbox"
+                    checked={form.relatedProjectIds.includes(p._id)}
+                    onChange={(e) =>
+                      set('relatedProjectIds', e.target.checked
+                        ? [...form.relatedProjectIds, p._id]
+                        : form.relatedProjectIds.filter((x) => x !== p._id))
+                    }
+                  />
+                  <span>{p.title}</span>
+                </label>
+              ))}
+            </fieldset>
+          )}
         </aside>
       </div>
     </form>

@@ -12,8 +12,9 @@ export type Activity = {
 
 export const activities: Activity[] = [
   { date: '2026.09.30', kind: '발표', title: 'S.C.P 세미나 — House of Spirit 취약점' },
-  { date: '2026.08', kind: '행사', title: '해킹캠프 참가', detail: 'AI 에이전트 해킹, LLM 로그인 계정 탈취, SBOM 등 세션 정리' },
-  { date: '2026.07.06 — 07.16', kind: '교육', title: '합동강화훈련' },
+  { date: '2026.08', kind: '행사', title: '해킹캠프 참가', detail: '들은 세션: AI 에이전트 해킹, LLM 로그인 계정 탈취, SBOM', href: '/blog/hacking-camp-2026' },
+  { date: '2026.08 — 09', kind: '행사', title: 'OWASP 세미나 참가', detail: 'AI SOC, 침해사고 대응 의사결정, 보안 컴플라이언스', href: '/blog/owasp-seminar-2026' },
+  { date: '2026.07.06 — 07.16', kind: '교육', title: '합동강화훈련', href: '/blog/joint-training-2026' },
   { date: '2026.06 — 09', kind: '프로젝트', title: 'TrustGate — 릴리스 계보 탐지·패키지 취약점 분석 시스템', detail: 'Rootkeepers, 팀장', href: '/projects/trustgate' },
   { date: '2026.04.14', kind: '발표', title: '오픈 세미나 — 프롬프트 인젝션' },
   { date: '2026.02.08', kind: 'CTF', title: '한양대 CTF 참가' },
@@ -29,3 +30,18 @@ export const activities: Activity[] = [
   { date: '', kind: '탐방', title: '토스 기업 탐방' },
   { date: '2025.03', kind: '학력', title: '중부대학교 정보보호학전공 입학' },
 ]
+
+/**
+ * 연도별로 묶습니다. 기록 순서는 바꾸지 않고, 연속된 항목을 같은 연도로 묶기만 합니다.
+ * 날짜가 비어 있는 항목은 바로 앞 항목의 연도에 붙입니다(Notion 목록에서의 위치 그대로).
+ */
+export function groupByYear(list: Activity[]): { year: string; items: Activity[] }[] {
+  const groups: { year: string; items: Activity[] }[] = []
+  for (const a of list) {
+    const year = a.date.match(/^\d{4}/)?.[0] ?? groups[groups.length - 1]?.year ?? '—'
+    const last = groups[groups.length - 1]
+    if (last && last.year === year) last.items.push(a)
+    else groups.push({ year, items: [a] })
+  }
+  return groups
+}

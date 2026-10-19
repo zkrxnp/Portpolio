@@ -9,13 +9,20 @@ export function RowActions({ endpoint, label }: { endpoint: string; label: strin
   const router = useRouter()
   const [confirming, setConfirming] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   async function remove() {
     setBusy(true)
-    const res = await fetch(endpoint, { method: 'DELETE' })
+    setError('')
+    const res = await fetch(endpoint, { method: 'DELETE' }).catch(() => null)
     setBusy(false)
-    if (res.ok) router.refresh()
-    else setConfirming(false)
+    if (res?.ok) {
+      router.refresh()
+      return
+    }
+    const body = await res?.json().catch(() => ({}))
+    setConfirming(false)
+    setError(body?.error ?? '삭제하지 못했습니다.')
   }
 
   if (confirming) {
@@ -29,9 +36,12 @@ export function RowActions({ endpoint, label }: { endpoint: string; label: strin
   }
 
   return (
+    <>
+    {error && <span className="field-error" role="alert">{error} </span>}
     <button className="icon-btn" onClick={() => setConfirming(true)} aria-label={`${label} 삭제`}>
       <Trash2 />
     </button>
+    </>
   )
 }
 

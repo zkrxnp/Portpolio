@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
-import { PROJECT_CATEGORIES, PROJECT_VISUALS } from '@/lib/models/Project'
+import { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES } from '@/lib/models/Project'
 import Visual from '@/components/site/Visual'
 
 type Form = {
@@ -14,6 +14,8 @@ type Form = {
   body: string
   category: string
   visual: string
+  status: string
+  thumbnail: string
   period: string
   role: string
   stack: string[]
@@ -25,7 +27,7 @@ type Form = {
 
 const EMPTY: Form = {
   title: '', slug: '', summary: '', body: '',
-  category: PROJECT_CATEGORIES[0], visual: 'none',
+  category: PROJECT_CATEGORIES[0], visual: 'none', status: '진행 중', thumbnail: '',
   period: '', role: '', stack: [],
   links: { repo: '', writeup: '', demo: '' },
   featured: false, published: true, order: 0,
@@ -120,6 +122,12 @@ export function ProjectEditor({
         <aside className="editor-side">
           <div className="side-box">
             <label className="field">
+              <span>진행 상태</span>
+              <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+                {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </label>
+            <label className="field">
               <span>분야</span>
               <select value={form.category} onChange={(e) => set('category', e.target.value)}>
                 {PROJECT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -135,6 +143,12 @@ export function ProjectEditor({
                   </option>
                 ))}
               </select>
+            </label>
+
+            <label className="field">
+              <span>대표 이미지 경로 <small>비우면 그래픽 사용 · /images/x.png 또는 https</small></span>
+              <input className="num" value={form.thumbnail} onChange={(e) => set('thumbnail', e.target.value)} maxLength={300} />
+              {errors.thumbnail && <em className="field-error">{errors.thumbnail}</em>}
             </label>
 
             {form.visual !== 'none' && (
@@ -163,12 +177,14 @@ export function ProjectEditor({
 
           <div className="side-box">
             <label className="field">
-              <span>저장소 링크</span>
-              <input className="num" value={form.links.repo} onChange={(e) => set('links', { ...form.links, repo: e.target.value })} />
+              <span>GitHub 링크</span>
+              <input className="num" value={form.links.repo} onChange={(e) => set('links', { ...form.links, repo: e.target.value })} placeholder="https://github.com/..." />
+              {errors['links.repo'] && <em className="field-error">{errors['links.repo']}</em>}
             </label>
             <label className="field">
               <span>라이트업 링크</span>
               <input className="num" value={form.links.writeup} onChange={(e) => set('links', { ...form.links, writeup: e.target.value })} />
+              {errors['links.writeup'] && <em className="field-error">{errors['links.writeup']}</em>}
             </label>
           </div>
 

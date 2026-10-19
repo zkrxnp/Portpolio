@@ -2,6 +2,7 @@ import Link from 'next/link'
 import dbConnect from '@/lib/mongodb'
 import Post from '@/lib/models/Post'
 import RowActions from '@/components/admin/RowActions'
+import PublishToggle from '@/components/admin/PublishToggle'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,7 +13,7 @@ export default async function AdminPosts() {
   return (
     <>
       <div className="admin-head">
-        <h1 className="admin-title">글</h1>
+        <h1 className="admin-title">기록</h1>
         <Link className="btn" href="/admin/posts/new">쓰기</Link>
       </div>
 
@@ -21,7 +22,7 @@ export default async function AdminPosts() {
       ) : (
         <table className="table">
           <thead>
-            <tr><th>제목</th><th>태그</th><th>상태</th><th className="ta-r">조회</th><th></th></tr>
+            <tr><th>제목</th><th>분류 · 태그</th><th>공개</th><th className="ta-r">조회</th><th></th></tr>
           </thead>
           <tbody>
             {items.map((p) => (
@@ -33,8 +34,8 @@ export default async function AdminPosts() {
                     {p.publishedAt && ` · ${new Date(p.publishedAt).toLocaleDateString('ko-KR')}`}
                   </small>
                 </td>
-                <td>{(p.tags ?? []).join(', ') || '—'}</td>
-                <td><span className={p.published ? 'pill on' : 'pill'}>{p.published ? '발행' : '초안'}</span></td>
+                <td>{p.category ?? '기타'}<small className="slug">{(p.tags ?? []).join(', ') || '—'}</small></td>
+                <td><PublishToggle id={String(p._id)} published={Boolean(p.published)} /></td>
                 <td className="ta-r num">{(p.views ?? 0).toLocaleString('ko-KR')}</td>
                 <td className="ta-r"><RowActions endpoint={`/api/admin/posts/${p._id}`} label={p.title} /></td>
               </tr>

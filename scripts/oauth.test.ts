@@ -27,7 +27,9 @@ check('다른 값은 거부', !safeEqual(s1, randomToken()))
 check('undefined는 거부', !safeEqual(s1, undefined))
 check('빈 문자열은 거부', !safeEqual(s1, ''))
 check('길이가 다르면 던지지 않고 거부', !safeEqual(s1, s1.slice(0, 10)))
-check('접두사만 같아도 거부', !safeEqual(s1, s1.slice(0, -1) + 'A'))
+// 마지막 글자를 반드시 다른 글자로 바꿉니다. 'A'로 고정하면 32바이트 base64url의 마지막 글자가
+// 16가지 중 하나라 약 1/16 확률로 원본과 같아져 테스트가 간헐적으로 실패했습니다.
+check('접두사만 같아도 거부', !safeEqual(s1, s1.slice(0, -1) + (s1.endsWith('A') ? 'B' : 'A')))
 check('토큰이 충분히 큼', randomToken().length >= 43, String(randomToken().length))
 check('매번 다른 값', new Set(Array.from({ length: 200 }, () => randomToken())).size === 200)
 

@@ -7,7 +7,8 @@ import { LogOut } from 'lucide-react'
 const tabs = [
   { href: '/admin', label: '개요' },
   { href: '/admin/projects', label: '프로젝트' },
-  { href: '/admin/posts', label: '글' },
+  { href: '/admin/posts', label: '기록' },
+  { href: '/admin/guestbook', label: '방명록' },
   { href: '/admin/messages', label: '문의' },
 ]
 

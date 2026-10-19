@@ -30,6 +30,8 @@ export default async function EditProject({ params }: { params: Promise<{ id: st
         body: doc.body ?? '',
         category: doc.category,
         visual: doc.visual ?? 'none',
+        status: doc.status ?? '완료',
+        thumbnail: doc.thumbnail ?? '',
         period: doc.period ?? '',
         role: doc.role ?? '',
         stack: doc.stack ?? [],

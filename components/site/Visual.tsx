@@ -19,10 +19,17 @@ const hexRows = [
   { off: '0028', bytes: '69 6c 65 73 0a 68 6f 73', ascii: 'iles.hos' },
 ]
 
+/** 그래픽 설명. aria-label과 상세 페이지 캡션이 같은 문장을 씁니다. */
+export const VISUAL_CAPTIONS: Record<string, string> = {
+  log: '파이프라인 로그 속에서 보안 검사가 두 건을 걸러낸 모습',
+  trust: '모든 패키지를 경계에서 검증한 뒤에만 설치로 보내는 구조',
+  hex: 'chroot 안의 nsswitch.conf가 공격자 라이브러리를 가리키는 바이트',
+}
+
 export function Visual({ kind }: { kind?: string | null }) {
   if (kind === 'log') {
     return (
-      <div className="v-log" role="img" aria-label="파이프라인 로그 속에서 보안 검사가 두 건을 걸러낸 모습">
+      <div className="v-log" role="img" aria-label={VISUAL_CAPTIONS.log}>
         {logLines.map((line) => (
           <div className={line.hit ? 'line hit' : 'line'} key={line.t}>
             <time>{line.t}</time>
@@ -35,27 +42,27 @@ export function Visual({ kind }: { kind?: string | null }) {
 
   if (kind === 'trust') {
     return (
-      <svg className="v-trust" viewBox="0 0 300 205" role="img" aria-label="모든 패키지를 경계에서 검증한 뒤에만 설치로 보내는 구조">
-        <rect x="92" y="18" width="192" height="169" fill="none" stroke="#2b2152" strokeDasharray="3 4" opacity=".45" />
-        <text x="99" y="33" fontSize="7.5" fill="#6a5a93" fontFamily="DM Mono, monospace">trust boundary</text>
-        <rect x="14" y="60" width="38" height="17" fill="none" stroke="#2b2152" />
-        <rect x="14" y="94" width="38" height="17" fill="none" stroke="#2b2152" />
-        <rect x="14" y="128" width="38" height="17" fill="none" stroke="#2b2152" />
-        <g stroke="#2b2152" strokeWidth="1" fill="none" opacity=".5">
+      <svg className="v-trust" viewBox="0 0 300 205" role="img" aria-label={VISUAL_CAPTIONS.trust}>
+        <rect x="92" y="18" width="192" height="169" fill="none" className="vt-line" strokeDasharray="3 4" opacity=".8" />
+        <text x="99" y="33" fontSize="7.5" className="vt-text" fontFamily="DM Mono, monospace">trust boundary</text>
+        <rect x="14" y="60" width="38" height="17" fill="none" className="vt-line" />
+        <rect x="14" y="94" width="38" height="17" fill="none" className="vt-line" />
+        <rect x="14" y="128" width="38" height="17" fill="none" className="vt-line" />
+        <g className="vt-line" strokeWidth="1" fill="none" opacity=".5">
           <path d="M52 68.5 H68 V103 H112" />
           <path d="M52 102.5 H112" />
           <path d="M52 136.5 H68 V103 H112" />
         </g>
-        <rect x="112" y="84" width="24" height="38" fill="#1c1a62" />
-        <path d="M118.5 102.5 l4.5 5 l8.5 -11" fill="none" stroke="#e6ddff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="112" y="136" fontSize="7.5" fill="#6a5a93" fontFamily="DM Mono, monospace">verify</text>
-        <g stroke="#6d5dfc" strokeWidth="1.4" fill="none">
+        <rect x="112" y="84" width="24" height="38" className="vt-accent" />
+        <path d="M118.5 102.5 l4.5 5 l8.5 -11" fill="none" className="vt-check" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <text x="112" y="136" fontSize="7.5" className="vt-text" fontFamily="DM Mono, monospace">verify</text>
+        <g className="vt-flow" strokeWidth="1.4" fill="none">
           <path d="M136 103 H166" />
           <path d="M166 103 V77 H186" />
           <path d="M166 103 H186" />
           <path d="M166 103 V129 H186" />
         </g>
-        <g fill="none" stroke="#2b2152">
+        <g fill="none" className="vt-line">
           <rect x="186" y="68" width="82" height="18" />
           <rect x="186" y="94" width="82" height="18" />
           <rect x="186" y="120" width="82" height="18" />
@@ -66,7 +73,7 @@ export function Visual({ kind }: { kind?: string | null }) {
 
   if (kind === 'hex') {
     return (
-      <div className="v-hex" role="img" aria-label="chroot 안의 nsswitch.conf가 공격자 라이브러리를 가리키는 바이트">
+      <div className="v-hex" role="img" aria-label={VISUAL_CAPTIONS.hex}>
         {hexRows.map((row) => (
           <div key={row.off}>
             <span className="off">{row.off}</span>

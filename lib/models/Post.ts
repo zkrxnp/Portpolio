@@ -1,5 +1,9 @@
 import { Schema, model, models, type InferSchemaType, type Model } from 'mongoose'
 
+/** Research Log 주제 분류. 기존 프로젝트 분야와 CTF 풀이를 기준으로 잡았습니다. */
+export const LOG_CATEGORIES = ['리버싱', '시스템', '공급망', 'CTF', '클라우드', 'AI 보안', '기타'] as const
+export type LogCategory = (typeof LOG_CATEGORIES)[number]
+
 const PostSchema = new Schema(
   {
     title: { type: String, required: true, trim: true, maxlength: 140 },
@@ -7,6 +11,8 @@ const PostSchema = new Schema(
     excerpt: { type: String, default: '', maxlength: 400 },
     body: { type: String, default: '' }, // 마크다운
     tags: { type: [String], default: [], index: true },
+    category: { type: String, enum: LOG_CATEGORIES, default: '기타' },
+    relatedProjectIds: { type: [{ type: Schema.Types.ObjectId, ref: 'Project' }], default: [] },
     published: { type: Boolean, default: false },
     publishedAt: { type: Date, default: null },
     views: { type: Number, default: 0, min: 0 },
@@ -16,6 +22,8 @@ const PostSchema = new Schema(
 )
 
 PostSchema.index({ published: 1, publishedAt: -1 })
+PostSchema.index({ category: 1, published: 1, publishedAt: -1 })
+PostSchema.index({ relatedProjectIds: 1 })
 PostSchema.index({ title: 'text', excerpt: 'text', body: 'text', tags: 'text' })
 
 // 공개 전환 시 발행일을 한 번만 찍고, 읽는 시간은 본문에서 계산합니다.

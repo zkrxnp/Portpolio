@@ -2,6 +2,7 @@ import { type NextRequest } from 'next/server'
 import { isValidObjectId } from 'mongoose'
 import dbConnect from '@/lib/mongodb'
 import Post from '@/lib/models/Post'
+import { z } from 'zod'
 import { postInput } from '@/lib/validation'
 import { ok, fail, handleError, slugify } from '@/lib/http'
 import { excerptFrom } from '@/lib/markdown'
@@ -56,6 +57,25 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
     const res = await Post.findByIdAndDelete(id)
     if (!res) return fail('글을 찾을 수 없습니다.', 404)
     return ok({ ok: true })
+  } catch (err) {
+    return handleError(err)
+  }
+}
+
+/** PATCH — 공개 여부만 바꿉니다. save()를 거쳐야 발행일이 pre('save')에서 채워집니다. */
+const patchInput = z.object({ published: z.boolean() }).strict()
+
+export async function PATCH(req: NextRequest, { params }: Ctx) {
+  try {
+    const { id } = await params
+    if (!isValidObjectId(id)) return fail('잘못된 식별자입니다.', 400)
+    const { published } = patchInput.parse(await req.json())
+    await dbConnect()
+    const doc = await Post.findById(id)
+    if (!doc) return fail('글을 찾을 수 없습니다.', 404)
+    doc.set({ published })
+    await doc.save()
+    return ok({ item: { _id: String(doc._id), published: doc.published, publishedAt: doc.publishedAt } })
   } catch (err) {
     return handleError(err)
   }

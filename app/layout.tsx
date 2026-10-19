@@ -27,15 +27,25 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'dark',
-  themeColor: '#0b0a2e',
+  colorScheme: 'dark light',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f6f6f6' },
+    { media: '(prefers-color-scheme: dark)', color: '#1e1e1e' },
+  ],
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko">
+    // data-theme은 아래 스크립트가 그리기 전에 넣습니다(저장값 → 시스템 설정). 서버 HTML과 달라도 경고를 내지 않게 합니다.
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='dark'}`,
+          }}
+        />
+      </head>
       <body className="antialiased">
-        <div className="bokeh" aria-hidden><span /><span /><span /><span /><span /><span /></div>
         <a href="#main" className="skip">본문으로 건너뛰기</a>
         <Header />
         <main id="main">{children}</main>
