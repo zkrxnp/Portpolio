@@ -4,6 +4,12 @@ minimumReleaseAgeExclude:
   - '@next/*'
   - next
 
+# jsdom 28부터 쓰는 html-encoding-sniffer 6 → @exodus/bytes가 ESM 전용이라,
+# 서버리스 런타임에서 require() 하다 ERR_REQUIRE_ESM으로 죽습니다(isomorphic-dompurify 경유).
+# 26.x는 CJS 의존성만 써서 Node 버전과 상관없이 동작합니다.
+overrides:
+  jsdom: 26.1.0
+
 allowBuilds:
   esbuild: true
 
