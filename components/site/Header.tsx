@@ -37,7 +37,6 @@ export function Header() {
       </nav>
       <div className="bar-right">
         <QuickSwitcher />
-        <a className="status" href="https://github.com/zkrxnp" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
         <ThemeToggle />
       </div>
       <button
