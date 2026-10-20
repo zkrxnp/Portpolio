@@ -1,6 +1,5 @@
 import { z } from 'zod'
-import { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES } from './models/Project'
-import { LOG_CATEGORIES } from './models/Post'
+import { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES, LOG_CATEGORIES } from './constants'
 
 /** 링크는 http(s)만. javascript:, data: 같은 스킴이 href로 들어가는 것을 막습니다. */
 const httpUrl = z

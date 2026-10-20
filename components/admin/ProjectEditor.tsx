@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
-import { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES } from '@/lib/models/Project'
+import { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES } from '@/lib/constants'
 import Visual from '@/components/site/Visual'
 
 type Form = {

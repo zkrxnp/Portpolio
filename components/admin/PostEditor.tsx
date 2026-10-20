@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
 import { renderMarkdown } from '@/lib/markdown'
-import { LOG_CATEGORIES } from '@/lib/models/Post'
+import { LOG_CATEGORIES } from '@/lib/constants'
 
 export type ProjectOption = { _id: string; title: string }
 

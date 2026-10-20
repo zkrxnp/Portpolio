@@ -1,8 +1,10 @@
 import { Schema, model, models, type InferSchemaType, type Model } from 'mongoose'
 
 /** Research Log 주제 분류. 기존 프로젝트 분야와 CTF 풀이를 기준으로 잡았습니다. */
-export const LOG_CATEGORIES = ['리버싱', '시스템', '공급망', 'CTF', '클라우드', 'AI 보안', '기타'] as const
-export type LogCategory = (typeof LOG_CATEGORIES)[number]
+import { LOG_CATEGORIES } from '../constants'
+// 선택지는 브라우저에서도 쓰므로 constants.ts에 두고, 기존 import 경로를 위해 다시 내보냅니다.
+export { LOG_CATEGORIES }
+export type { LogCategory } from '../constants'
 
 const PostSchema = new Schema(
   {

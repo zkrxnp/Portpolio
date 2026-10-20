@@ -1,11 +1,9 @@
 import { Schema, model, models, type InferSchemaType, type Model } from 'mongoose'
 
-export const PROJECT_CATEGORIES = ['시스템', '리버싱', '공급망', '클라우드', 'AI 보안'] as const
-export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number]
-
-export const PROJECT_VISUALS = ['log', 'trust', 'hex', 'none'] as const
-export const PROJECT_STATUSES = ['진행 중', '완료', '중단'] as const
-export type ProjectStatus = (typeof PROJECT_STATUSES)[number]
+import { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES } from '../constants'
+// 선택지는 브라우저에서도 쓰므로 constants.ts에 두고, 기존 import 경로를 위해 다시 내보냅니다.
+export { PROJECT_CATEGORIES, PROJECT_VISUALS, PROJECT_STATUSES }
+export type { ProjectCategory, ProjectStatus } from '../constants'
 
 const ProjectSchema = new Schema(
   {
